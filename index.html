@@ -1,0 +1,325 @@
+<html>
+    <head>
+        <title>Parimutuel pool on Augur</title>
+        <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+        <!-- oh em gee you use jquery? it's 2018 get with the latest framework memes! normies get out!!!!! -->
+        <script
+            src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
+            crossorigin="anonymous"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+    </head>
+    <body>
+        <script>
+            $(document).ready( function () {
+                $('#the_goddamn_table').DataTable({
+                    paging: false,
+                    lengthChange: false,
+                    ordering: false,
+                    searching: false,
+                    info: false,
+                    data: []
+                });
+
+                var market = "0x62643d0b946899bf7770f9b15cf9ae6c73d2cf9d";
+                var pool = "0x3066199190baf3e2ae312dc70a91fef14afbec0e";
+
+                var pool_abi = [
+                    {
+                        "constant": false,
+                        "inputs": [
+                            {
+                                "name": "outcome",
+                                "type": "uint256"
+                            }
+                        ],
+                        "name": "claim",
+                        "outputs": [],
+                        "payable": false,
+                        "stateMutability": "nonpayable",
+                        "type": "function"
+                    },
+                    {
+                        "constant": true,
+                        "inputs": [
+                            {
+                                "name": "",
+                                "type": "address"
+                            },
+                            {
+                                "name": "",
+                                "type": "uint256"
+                            }
+                        ],
+                        "name": "bets",
+                        "outputs": [
+                            {
+                                "name": "",
+                                "type": "uint256"
+                            }
+                        ],
+                        "payable": false,
+                        "stateMutability": "view",
+                        "type": "function"
+                    },
+                    {
+                        "constant": false,
+                        "inputs": [],
+                        "name": "finalize",
+                        "outputs": [],
+                        "payable": false,
+                        "stateMutability": "nonpayable",
+                        "type": "function"
+                    },
+                    {
+                        "constant": false,
+                        "inputs": [
+                            {
+                                "name": "outcome",
+                                "type": "uint256"
+                            }
+                        ],
+                        "name": "bet",
+                        "outputs": [],
+                        "payable": true,
+                        "stateMutability": "payable",
+                        "type": "function"
+                    },
+                    {
+                        "constant": true,
+                        "inputs": [],
+                        "name": "minimum_bet",
+                        "outputs": [
+                            {
+                                "name": "",
+                                "type": "uint256"
+                            }
+                        ],
+                        "payable": false,
+                        "stateMutability": "view",
+                        "type": "function"
+                    },
+                    {
+                        "constant": true,
+                        "inputs": [],
+                        "name": "number_of_complete_sets_purchased",
+                        "outputs": [
+                            {
+                                "name": "",
+                                "type": "uint256"
+                            }
+                        ],
+                        "payable": false,
+                        "stateMutability": "view",
+                        "type": "function"
+                    },
+                    {
+                        "constant": true,
+                        "inputs": [
+                            {
+                                "name": "",
+                                "type": "uint256"
+                            }
+                        ],
+                        "name": "outcomes",
+                        "outputs": [
+                            {
+                                "name": "",
+                                "type": "uint256"
+                            }
+                        ],
+                        "payable": false,
+                        "stateMutability": "view",
+                        "type": "function"
+                    },
+                    {
+                        "constant": true,
+                        "inputs": [],
+                        "name": "pools_closed_time",
+                        "outputs": [
+                            {
+                                "name": "",
+                                "type": "uint256"
+                            }
+                        ],
+                        "payable": false,
+                        "stateMutability": "view",
+                        "type": "function"
+                    },
+                    {
+                        "inputs": [
+                            {
+                                "name": "market_",
+                                "type": "address"
+                            },
+                            {
+                                "name": "minimum_bet_",
+                                "type": "uint256"
+                            },
+                            {
+                                "name": "pools_closed_time_",
+                                "type": "uint256"
+                            }
+                        ],
+                        "payable": false,
+                        "stateMutability": "nonpayable",
+                        "type": "constructor"
+                    },
+                    {
+                        "payable": false,
+                        "stateMutability": "nonpayable",
+                        "type": "fallback"
+                    }
+                ];
+
+                var pool_contract = web3.eth.contract(pool_abi);
+                var pool_instance = pool_contract.at(pool);
+
+                $('#outcome-0-button').click(function() {
+                    console.log($('#outcome-0-eth').val());
+                    (async () => {
+                        new Promise((resolve, reject) => {
+                            pool_instance.bet(0, {from: web3.eth.accounts[0], value: web3.toWei($('#outcome-0-eth').val()), gas: 100000}, (error, result) => {
+                                if (error) {
+                                    console.log(error);
+                                } else {
+                                    resolve(result);
+                                }
+                            });
+                        }).then((value) => {
+                            console.log(value);
+                        });
+                    })().catch(e => console.log(e));
+                });
+
+                $('#outcome-1-button').click(function() {
+                    console.log($('#outcome-1-eth').val());
+                    (async () => {
+                        new Promise((resolve, reject) => {
+                            pool_instance.bet(1, {from: web3.eth.accounts[0], value: web3.toWei($('#outcome-1-eth').val()), gas: 100000}, (error, result) => {
+                                if (error) {
+                                    console.log(error);
+                                } else {
+                                    resolve(result);
+                                }
+                            });
+                        }).then((value) => {
+                            console.log(value);
+                        });
+                    })().catch(e => console.log(e));
+                });
+
+                (async () => {
+                    new Promise((resolve, reject) => {
+                        pool_instance.minimum_bet.call((error, result) => {
+                            if (error) {
+                                console.log(error);
+                            } else {
+                                resolve(result);
+                            }
+                        });
+                    }).then((value) => {
+                        $('#minimum-bet').text(Number(web3.fromWei(value)).toFixed(18).replace(/\.?0+$/,""));
+                    });
+
+                    new Promise((resolve, reject) => {
+                        pool_instance.pools_closed_time.call((error, result) => {
+                            if (error) {
+                                console.log(error);
+                            } else {
+                                resolve(result);
+                            }
+                        });
+                    }).then((value) => {
+                        $('#pools-closed-time').text(new Date(value * 1000));
+                    });
+                    
+                    new Promise((resolve, reject) => {
+                        pool_instance.pools_closed_time.call((error, result) => {
+                            if (error) {
+                                console.log(error);
+                            } else {
+                                resolve(result);
+                            }
+                        });
+                    }).then((value) => {
+                        $('#pools-closed-time').text(Date(value * 1000));
+                    });
+                })().catch(e => console.log(e));
+
+                setInterval((async () => {
+                    var outcomes = ["NO", "YES"];
+                    Promise.all(outcomes.map((k, i) => new Promise((resolve, reject) => {
+                        pool_instance.outcomes.call(i, (error, result) => {
+                            if (error) {
+                                console.log(error);
+                            } else {
+                                resolve(result);
+                            }
+                        });
+                    }))).then((values) => {
+                        var stakes = values.map(Number);
+                        var pot_size = stakes.reduce((a, b) => a + b, 0);
+                        var odds = stakes.map(x => pot_size / x);
+                        var data = [
+                            outcomes, 
+                            stakes.map(x => Number(web3.fromWei(x)).toFixed(18).replace(/\.?0+$/,"")), 
+                            odds.map(x => x.toFixed(2))
+                        ];
+                        data = data[0].map((x,i) => data.map(x => x[i]));
+                        var table = $('#the_goddamn_table').DataTable();
+                        table.clear().rows.add(data).draw();
+                        $('#pot-size').text(Number(web3.fromWei(pot_size)).toFixed(18).replace(/\.?0+$/,""));
+                    });
+
+                }), 1000);
+            } );
+        </script>
+
+        <h2>How it works:</h2>
+        <ol>
+            <li>Stake ETH on your favored outcome</li>
+            <li>Wait for pool closing time to arrive</li>
+            <li>The pool can then be finalized. This will buy complete sets using all of the ETH in the pot</li>
+            <li>You may then claim shares in your favored outcome from the pool</li>
+            <li>The number of shares you receive is proportional to your stake in the outcome divided by the total stake in the outcome</li>
+        </ol>
+        <h2>You need MetaMask enabled and logged in on the Rinkeby network. If it doesn't work, sorry, I'm not some genius web developer</h2>
+
+        <div>Market: Will the ex-president of Argentina, CFK, go to jail before the end of the year?</div>
+        <br/>
+        <div>Pool closing time: <span id="pools-closed-time">10:45:00 UTC</span></div>
+        <br/>
+        <div>Minimum bet: <span id="minimum-bet">0.1</span> ETH</div>
+        <br/>
+        <br/>
+        <div style="width: 400px">
+            <table id="the_goddamn_table" class="display">
+                <thead>
+                    <tr>
+                        <th>Outcome</th>
+                        <th>Total staked (ETH)</th>
+                        <th>Probable odds</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <br />
+        <span>Total pot size: <span id="pot-size">0.3</span> ETH</span>
+        <br />
+        <br />
+        <span>Bet on NO:</span>
+        <input type="text" id="outcome-0-eth" />
+        <button id="outcome-0-button">Bet</button>
+        <br />
+        <span>Bet on YES:</span>
+        <input type="text" id="outcome-1-eth" />
+        <button id="outcome-1-button">Bet</button>
+        <br />
+        <br />
+        <br />
+        
+    </body>
+</html>
